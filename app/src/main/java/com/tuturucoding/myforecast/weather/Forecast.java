@@ -40,7 +40,7 @@ public class Forecast {
         String [] timeParts = time.split(":");
         int timePartHour = Integer.parseInt(timeParts[0]);
 
-        if (time.toLowerCase().contains("PM".toLowerCase()) && timePartHour >= 5) {
+        if (time.toLowerCase().contains("PM".toLowerCase()) && timePartHour >= 6) {
             isNight = true;
         } else {
             isNight = false;
