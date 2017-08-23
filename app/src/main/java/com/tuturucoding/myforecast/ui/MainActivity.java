@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String DAILY_FORECAST = "DAILY_FORECAST";
     public static final String LOCATION = "LOCATION" ;
     public static final String HOURLY_FORECAST = "HOURLY_FORECAST";
+    public static final String NIGHT = "NIGHT";
 
     private Forecast mForecast;
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -196,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
 
                     try {
                         String jsonData = response.body().string();
+                        Log.v("json", jsonData);
                         if (response.isSuccessful()) {
                             mForecast = parseForcastDetails(jsonData);
 
@@ -233,7 +236,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void changeLayoutCheck() {
+        // Change background if time has passed 4:00PM
+        if (mForecast.getIsNight()) {
+            RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
+            //RelativeLayout dailyLayout = (RelativeLayout) findViewById(R.id.dailyLayout);
+            //RelativeLayout hourlyLayout = (RelativeLayout) findViewById(R.id.hourlyLayout);
+
+            mainLayout.setBackgroundResource(R.drawable.bg_gradient_night);
+            //dailyLayout.setBackgroundResource(R.drawable.bg_gradient_night);
+            //hourlyLayout.setBackgroundResource(R.drawable.bg_gradient_night);
+
+        }
+    }
+
     private void upDateDisplay() {
+
+        changeLayoutCheck();    // Change background if time has passed 4:00PM
+
         Drawable drawable = ContextCompat.getDrawable(this, mForecast.getCurrent().getIconId());
 
         mTemperatureLabel.setText(mForecast.getCurrent().getTemperature() + "");
@@ -350,6 +370,7 @@ public class MainActivity extends AppCompatActivity {
     public void startDailyActivity(View view) {
         Intent intent = new Intent(this, DailyForecastActivity.class);
         intent.putExtra(DAILY_FORECAST, mForecast.getDailyForecast());
+        intent.putExtra(NIGHT, mForecast.getIsNight());
         intent.putExtra(LOCATION, mForecast.getCurrent().getLocation());
         startActivity(intent);
     }
@@ -358,9 +379,8 @@ public class MainActivity extends AppCompatActivity {
     public void startHourlyActivity(View view) {
         Intent intent = new Intent(this, HourlyForecastActivity.class);
         intent.putExtra(HOURLY_FORECAST, mForecast.getHourlyForecast());
+        intent.putExtra(NIGHT, mForecast.getIsNight());
         intent.putExtra(LOCATION, mForecast.getCurrent().getLocation());
         startActivity(intent);
-
-
     }
 }

@@ -6,6 +6,9 @@ public class Forecast {
     private Current mCurrent;
     private Hour[] mHourlyForecast;
     private Day[] mDailyForecast;
+    private boolean isNight = false;
+
+
 
     public Current getCurrent() {
         return mCurrent;
@@ -13,6 +16,7 @@ public class Forecast {
 
     public void setCurrent(Current current) {
         mCurrent = current;
+        checkNightTime();
     }
 
     public Hour[] getHourlyForecast() {
@@ -29,6 +33,22 @@ public class Forecast {
 
     public void setDailyForecast(Day[] dailyForecast) {
         mDailyForecast = dailyForecast;
+    }
+
+    public void checkNightTime() {
+        String time = mCurrent.getFormattedTime();
+        String [] timeParts = time.split(":");
+        int timePartHour = Integer.parseInt(timeParts[0]);
+
+        if (time.toLowerCase().contains("PM".toLowerCase()) && timePartHour >= 5) {
+            isNight = true;
+        } else {
+            isNight = false;
+        }
+    }
+
+    public boolean getIsNight () {
+        return isNight;
     }
 
     public static int getIconId(String iconString) {

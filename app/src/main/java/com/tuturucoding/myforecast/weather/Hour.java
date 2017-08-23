@@ -3,6 +3,9 @@ package com.tuturucoding.myforecast.weather;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Hour implements Parcelable{
     private long mTime;
     private String mSummary;
@@ -49,7 +52,11 @@ public class Hour implements Parcelable{
     }
 
     public double getTemperature() {
-        return mTemperature;
+        return (int) Math.round(mTemperature);
+    }
+
+    public int getIconId() {
+        return Forecast.getIconId(mIcon);
     }
 
     public void setTemperature(double temperature) {
@@ -71,6 +78,14 @@ public class Hour implements Parcelable{
     public void setTimezone(String timezone) {
         mTimezone = timezone;
     }
+
+    public String getHour() {
+        SimpleDateFormat formatter = new SimpleDateFormat("h a");
+        Date date = new Date(mTime * 1000);
+        return formatter.format(date);
+    }
+
+
 
     @Override
     public int describeContents() {
